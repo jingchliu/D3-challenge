@@ -1,3 +1,4 @@
+
 let svgWidth = 960;
 let svgHeight = 500;
 
@@ -91,8 +92,8 @@ function renderYCircles(circlesGroup, newYScale, chosenYAxis) {
 // function used for updating circles group with new tooltip
 function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
 
-  var xlabel;
-  var ylabel;
+  let xLabel,
+    yLabel;
 
   if (chosenXAxis === "poverty") {
     xLabel = "Poverty:";
@@ -118,7 +119,7 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
     .attr("class", "d3-tip")
     .offset([80, -60])
     .html(function(d) {
-      return (`${d.state}<br>${xlabel} ${d[chosenXAxis]}<br>${ylabel} ${d[chosenYAxis]}`);
+      return (`${d.state}<br>${xLabel} ${d[chosenXAxis]}<br>${yLabel} ${d[chosenYAxis]}`);
     });
 
   circlesGroup.call(toolTip);
@@ -127,7 +128,7 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
     toolTip.show(data);
   })
     // onmouseout event
-    .on("mouseout", function(data, index) {
+    .on("mouseout", function(data) {
       toolTip.hide(data);
     });
 
@@ -166,7 +167,7 @@ d3.csv("assets/data/data.csv").then(function(pplData, err) {
     .call(bottomAxis);
 
   // append y axis
-  chartGroup.append("g")
+  let yAxis = chartGroup.append("g")
     .call(leftAxis);
 
   // append initial circles
@@ -188,7 +189,6 @@ d3.csv("assets/data/data.csv").then(function(pplData, err) {
   let ylabelsGroup = chartGroup.append("g")
     .attr("transform", "rotate(-90)")
   
-
   let povertyXLabel = xlabelsGroup.append("text")
     .classed('xText', true)
     .attr("x", 0)
@@ -245,7 +245,7 @@ d3.csv("assets/data/data.csv").then(function(pplData, err) {
   circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
   // x axis labels event listener
-  labelsGroup.selectAll(".xText")
+  xlabelsGroup.selectAll(".xText")
     .on("click", function() {
       // get value of selection
       let value = d3.select(this).attr("value");
@@ -305,7 +305,7 @@ d3.csv("assets/data/data.csv").then(function(pplData, err) {
       }
     });
 
-    labelsGroup.selectAll(".yText")
+    ylabelsGroup.selectAll(".yText")
     .on("click", function() {
       // get value of selection
       let value = d3.select(this).attr("value");
@@ -315,10 +315,10 @@ d3.csv("assets/data/data.csv").then(function(pplData, err) {
         chosenYAxis = value;
 
         // functions here found above csv import
-        // updates x scale for new data
+        // updates y scale for new data
         yLinearScale = yScale(pplData, chosenYAxis);
 
-        // updates x axis with transition
+        // updates y axis with transition
         yAxis = renderYAxes(yLinearScale, yAxis);
 
         // updates circles with new x values
